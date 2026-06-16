@@ -18,10 +18,10 @@ Plateau :
 #include <stdint.h> // uint***
 #include <time.h>
 
-#include "list.h"
-#include "player.h"
-#include "visual.h"
-#include "invider.h"
+#include "../include/list.h"
+#include "../include/player.h"
+#include "../include/visual.h"
+#include "../include/invider.h"
 
 
 #define HEIGHT 20
@@ -165,6 +165,9 @@ DoubleChaine* checkInviderCollision(DoubleChaine *inviderElement) {
 }
 
 
+
+// Game helper
+
 int getBestScore() {
   if (bestScore != -1) return bestScore;
   
@@ -222,106 +225,8 @@ void startGame() {
 }
 
 
-/*void drawGame() {
-  // clear game
-  // light_gray_background();
-  clearRect(OFFSET_X, OFFSET_Y, WIDTH, HEIGHT);
 
-
-
-  // draw bullets
-  DoubleChaine *currentBullet = bullets.first;
-
-  while (currentBullet != NULL) {
-    Bullet *bullet = currentBullet->value;
-
-    moveToGame(bullet->posX, bullet->posY);
-    blue_text();
-    putchar('*');
-
-    currentBullet = currentBullet->next;
-  }
-
-
-  // draw inviders
-  DoubleChaine *currentInvider = inviders.first;
-
-  while (currentInvider != NULL) {
-    Invider *invider = currentInvider->value;
-
-    moveToGame(invider->posX, invider->posY);
-    red_text();
-    putchar('$');
-
-    currentInvider = currentInvider->next;
-  }
-
-  // draw player
-  moveToGame(player.posX, player.posY);
-  white_text();
-  putchar('^');
-
-  moveToGame(0, -2);
-  black_background();
-  printf("Score : %d", player.score);
-
-  moveToGame(0, -3);
-  printf("Vie : %d/%d", player.health, PLAYER_HEALTH);
-}*/
-
-// drawStartMenu
-
-/*void drawEndMenu() {
-  black_background();
-  clearRect(OFFSET_X, OFFSET_Y, WIDTH, HEIGHT);
-
-  moveToGame(WIDTH / 2 - 2, HEIGHT/2);
-
-  black_text();
-  white_background();
-
-  printf("back");
-
-  black_background();
-  white_text();
-  moveToGame(WIDTH / 2 - 6, HEIGHT/2 + 4);
-  printf("You lose...");
-
-  moveToGame(WIDTH / 2 - (16 + (player.score > 0? (int) floor(log10(player.score)) + 1 : 0))/2, HEIGHT/2 + 3);
-  printf("Your score is : %d", player.score);
-
-  int _bestScore = getBestScore();
-  moveToGame(WIDTH / 2 - (16 + (_bestScore > 0? (int) floor(log10(_bestScore)) + 1 : 0))/2, HEIGHT/2 + 2);
-  printf("Best score is : %d", _bestScore);
-
-}*/
-
-void drawBox() {
-  // Draw box
-  black_text();
-  black_background();
-
-  for (int offset_y = 0; offset_y < OFFSET_Y; offset_y++) {
-    moveTo(0, offset_y);
-    for (int i = 0; i < WIDTH+ 2*OFFSET_X ; i++) putchar(GAME_BORDERS);
-  }
-  
-  for (int i = 0; i < HEIGHT; i++) {
-    moveTo(0, OFFSET_Y + i);
-    for (int offset_x = 0; offset_x < OFFSET_X; offset_x++) putchar(GAME_BORDERS);
-
-    moveTo(OFFSET_X + WIDTH, OFFSET_Y + i);
-    for (int offset_x = 0; offset_x < OFFSET_X; offset_x++) putchar(GAME_BORDERS);
-  }
-  
-  for (int offset_y = 0; offset_y < OFFSET_Y; offset_y++) {
-    moveTo(0, HEIGHT+OFFSET_Y + offset_y);
-    for (int i = 0; i < WIDTH+ 2*OFFSET_X ; i++) putchar(GAME_BORDERS);
-  }
-
-  moveTo(0, HEIGHT+2*OFFSET_Y);
-  for (int i = 0; i < WIDTH + 2*OFFSET_X ; i++) putchar(GAME_BORDERS);
-}
+// Draw
 
 void draw() {
 
@@ -346,6 +251,10 @@ void draw() {
   reset();
   moveToGame(-OFFSET_X, -OFFSET_Y+1);
 }
+
+
+
+// Events
 
 void startMenuEvent(SDL_Event* event) {
   if (event->type == SDL_EVENT_KEY_DOWN) {
@@ -407,6 +316,9 @@ void manageEvent(SDL_Event* event) {
   }
 }
 
+
+
+// Ticks
 
 void bulletsTick(Uint32 actualTime) {
   DoubleChaine *currentElement = bullets.first;
@@ -539,8 +451,6 @@ void startMenuTick(Uint32 actualTime) {
 }
 
 void endMenuTick(Uint32 actualTime) {
-  (void)actualTime;
-  /* Event handling is done in SDL event loop through endMenuEvent(). */
 }
 
 void tick() {
@@ -575,6 +485,8 @@ void tick() {
   }
   
 }
+
+
 
 
 void init() {

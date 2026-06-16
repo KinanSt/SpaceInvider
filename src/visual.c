@@ -1,4 +1,4 @@
-#include "visual.h"
+#include "../include/visual.h"
 
 
 SDL_Window *window;
@@ -25,6 +25,7 @@ int windowWidth, windowHeight;
 uint16_t caseSize, usedWidth, usedHeight, gameWidth, gameHeight, xOffset, yOffset, playerMaxHealth;
 
 
+
 void initGameVisual(uint16_t _gameWidth, uint16_t _gameHeight, uint16_t _xOffset, uint16_t _yOffset, uint16_t _playerMaxHealth) {
   gameWidth = _gameWidth;
   gameHeight = _gameHeight;
@@ -32,6 +33,10 @@ void initGameVisual(uint16_t _gameWidth, uint16_t _gameHeight, uint16_t _xOffset
   yOffset = _yOffset;
   playerMaxHealth = _playerMaxHealth;
 }
+
+
+
+// Window managment
 
 void initWindow() {
   if (SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -96,6 +101,9 @@ void destroyWindow() {
   SDL_Quit();
 }
 
+
+
+// Drawing utils
 
 void drawTextAt(int x, int y, const char* text, TTF_Font* font, SDL_Color* color, uint8_t xAnchor, uint8_t yAnchor, SDL_Color* highlightColor) {
 
@@ -196,6 +204,9 @@ void drawRectAt(int x, int y, int width, int height, SDL_Color* color) {
 }
 
 
+
+// Calcule utils
+
 void getGamePosition(int gameX, int gameY, int* posX, int* posY) {
   *posX = (windowWidth-gameWidth*caseSize)/2+(gameX+0.5)*caseSize;
 
@@ -242,6 +253,9 @@ void updateDrawVars() {
   system("pause");*/
 }
 
+
+
+// Draw
 
 void drawGame(Player* player, ListDoubleChaine* inviders, ListDoubleChaine* bullets) {
   SDL_GetWindowSize(window, &windowWidth, &windowHeight);

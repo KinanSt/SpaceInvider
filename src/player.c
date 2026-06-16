@@ -1,4 +1,5 @@
-#include "player.h"
+#include "../include/player.h"
+
 
 void playerMoveLeft(Player* player, int min, uint16_t distance) {
   if (player->posX >= min+distance) {

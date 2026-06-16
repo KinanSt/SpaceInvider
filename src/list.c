@@ -1,4 +1,4 @@
-#include "list.h"
+#include "../include/list.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -60,6 +60,7 @@ void ajouter_apres(struct ListDoubleChaine* list, void* newValue, struct DoubleC
     list->last = newElement;
   }
 }
+
 
 void supprimer_debut(struct ListDoubleChaine* list) {
 
