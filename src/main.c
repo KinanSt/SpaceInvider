@@ -20,7 +20,10 @@ Plateau :
 #include <windows.h>
 #include <conio.h>
 
-#include "../libs/list.h"
+#include "list.h"
+#include "player.h"
+#include "visual.h"
+#include "invider.h"
 
 
 #define HEIGHT 20
@@ -61,46 +64,19 @@ Plateau :
 #define reset() printf("\033[0m")
 
 
-
-struct Invider {
-  uint8_t level;
-  int8_t health;
-  uint8_t posX;
-  uint8_t posY;
-  
-  int lastMoveTime;
-};
-
-struct Player {
-  uint8_t health;
-  uint8_t posX;
-  uint8_t posY;
-  uint16_t score;
-  
-  int lastShotMs;
-};
-
-struct Game {
+typedef struct Game {
   int lastTickMs;
   int lastSpawnMs;
   //boolean moved;
   uint8_t playing; // 0 -> stop ; 1 -> start menu ; 2 -> play ; 3 -> menu end
-};
+} Game;
 
-uint8_t lastPlaying = 0;
 
-struct Bullet {
-  uint8_t posX;
-  uint8_t posY;
+ListDoubleChaine inviders;
+ListDoubleChaine bullets;
 
-  int lastMoveTime;
-};
-
-struct ListDoubleChaine inviders;
-struct ListDoubleChaine bullets;
-
-struct Player player;
-struct Game game;
+Player player;
+Game game;
 
 uint8_t startMenuBtnIndex = 0;
 
@@ -115,33 +91,33 @@ void clearRect(int x1, int y1, int width, int height) {
   }
 }
 
-struct DoubleChaine* deleteInvider(struct DoubleChaine *inviderElement) {
+DoubleChaine* deleteInvider(DoubleChaine *inviderElement) {
   free(inviderElement->value);
 
-  struct DoubleChaine *nextElement = inviderElement->next;
+  DoubleChaine *nextElement = inviderElement->next;
 
   supprimer(&inviders, inviderElement);
 
   return nextElement;
 }
 
-struct DoubleChaine* deleteBullet(struct DoubleChaine *bulletElement) {
+DoubleChaine* deleteBullet(DoubleChaine *bulletElement) {
   free(bulletElement->value);
 
-  struct DoubleChaine *nextElement = bulletElement->next;
+  DoubleChaine *nextElement = bulletElement->next;
 
   supprimer(&bullets, bulletElement);
 
   return nextElement;
 }
 
-struct DoubleChaine* checkBulletCollision(struct DoubleChaine *bulletElement) {
-  struct Bullet *bullet = bulletElement->value;
-  struct DoubleChaine *currentElement = inviders.first;
+DoubleChaine* checkBulletCollision(DoubleChaine *bulletElement) {
+  Bullet *bullet = bulletElement->value;
+  DoubleChaine *currentElement = inviders.first;
 
   while (currentElement != NULL) {
 
-    struct Invider *invider = currentElement->value;
+    Invider *invider = currentElement->value;
 
     if (invider->posX == bullet->posX && invider->posY == bullet->posY) {
       invider->health--;
@@ -162,13 +138,13 @@ struct DoubleChaine* checkBulletCollision(struct DoubleChaine *bulletElement) {
   return bulletElement->next;
 }
 
-struct DoubleChaine* checkInviderCollision(struct DoubleChaine *inviderElement) {
-  struct Invider *invider = inviderElement->value;
-  struct DoubleChaine *currentElement = bullets.first;
+DoubleChaine* checkInviderCollision(DoubleChaine *inviderElement) {
+  Invider *invider = inviderElement->value;
+  DoubleChaine *currentElement = bullets.first;
 
   while (currentElement != NULL) {
 
-    struct Bullet *bullet = currentElement->value;
+    Bullet *bullet = currentElement->value;
 
     if (invider->posX == bullet->posX && invider->posY == bullet->posY) {
       invider->health--;
@@ -225,7 +201,7 @@ void saveBestScore(int newBestScore) {
 }
 
 void endGame() {
-  struct DoubleChaine *currentElement = bullets.first;
+  DoubleChaine *currentElement = bullets.first;
   while (currentElement != NULL) currentElement = deleteBullet(currentElement);
 
   currentElement = inviders.first;
@@ -249,18 +225,18 @@ void startGame() {
 }
 
 
-void drawGame() {
+/*void drawGame() {
   // clear game
-  //light_gray_background();
+  // light_gray_background();
   clearRect(OFFSET_X, OFFSET_Y, WIDTH, HEIGHT);
 
 
 
   // draw bullets
-  struct DoubleChaine *currentBullet = bullets.first;
+  DoubleChaine *currentBullet = bullets.first;
 
   while (currentBullet != NULL) {
-    struct Bullet *bullet = currentBullet->value;
+    Bullet *bullet = currentBullet->value;
 
     moveToGame(bullet->posX, bullet->posY);
     blue_text();
@@ -271,10 +247,10 @@ void drawGame() {
 
 
   // draw inviders
-  struct DoubleChaine *currentInvider = inviders.first;
+  DoubleChaine *currentInvider = inviders.first;
 
   while (currentInvider != NULL) {
-    struct Invider *invider = currentInvider->value;
+    Invider *invider = currentInvider->value;
 
     moveToGame(invider->posX, invider->posY);
     red_text();
@@ -294,38 +270,11 @@ void drawGame() {
 
   moveToGame(0, -3);
   printf("Vie : %d/%d", player.health, PLAYER_HEALTH);
-}
+}*/
 
-void drawStartMenu() {
-  black_background();
-  clearRect(OFFSET_X, OFFSET_Y, WIDTH, HEIGHT);
+// drawStartMenu
 
-  moveToGame(WIDTH / 2 - 7, HEIGHT/2);
-
-  if (startMenuBtnIndex == 0) {
-    black_text();
-    white_background();
-  } else {
-    white_text();
-    black_background();
-  }
-
-  printf("start");
-
-  moveToGame(WIDTH / 2 + 2, HEIGHT/2);
-
-  if (startMenuBtnIndex == 1) {
-    black_text();
-    white_background();
-  } else {
-    white_text();
-    black_background();
-  }
-
-  printf("quit");
-}
-
-void drawEndMenu() {
+/*void drawEndMenu() {
   black_background();
   clearRect(OFFSET_X, OFFSET_Y, WIDTH, HEIGHT);
 
@@ -348,7 +297,7 @@ void drawEndMenu() {
   moveToGame(WIDTH / 2 - (16 + (_bestScore > 0? (int) floor(log10(_bestScore)) + 1 : 0))/2, HEIGHT/2 + 2);
   printf("Best score is : %d", _bestScore);
 
-}
+}*/
 
 void drawBox() {
   // Draw box
@@ -378,27 +327,22 @@ void drawBox() {
 }
 
 void draw() {
-  if (game.playing != lastPlaying) {
-    lastPlaying = game.playing;
-    drawBox();
-  }
-
 
   switch (game.playing) {
     case 1:
-      drawStartMenu();
+      drawStartMenu(startMenuBtnIndex);
       break;
 
     case 2:
-      drawGame();
+      drawGame(&player, &inviders, &bullets);
       break;
 
     case 3:
-      drawEndMenu();
+      drawEndMenu(player.score, getBestScore());
       break;
     
     default:
-      drawStartMenu();
+      drawStartMenu(startMenuBtnIndex);
       break;
   }
 
@@ -406,24 +350,73 @@ void draw() {
   moveToGame(-OFFSET_X, -OFFSET_Y+1);
 }
 
-void drawAll() {
-  // clear console
-  clear();
+void startMenuEvent(SDL_Event* event) {
+  if (event->type == SDL_EVENT_KEY_DOWN) {
+    if (event->key.key == SDLK_LEFT) {
+      startMenuBtnIndex = 0;
+    } else if (event->key.key == SDLK_RIGHT) {
+      startMenuBtnIndex = 1;
+    } else if (event->key.key == SDLK_RETURN) {
+      if (startMenuBtnIndex == 0) {
+        startGame();
+      } else {
+        game.playing = 0;
+      }
+    }
+  }
+}
 
-  drawBox();  
+void gameEvent(SDL_Event* event) {
+  if (event->type == SDL_EVENT_KEY_DOWN) {
+    if (event->key.key == SDLK_LEFT) {
+      playerMoveLeft(&player, 0, 1);
+    } else if (event->key.key == SDLK_RIGHT) {
+      playerMoveRight(&player, WIDTH-1, 1);
+    } else if (event->key.key == SDLK_SPACE) {
+      Bullet *newBullet = malloc(sizeof(Bullet));
+      newBullet->posX = player.posX;
+      newBullet->posY = player.posY;
+      newBullet->lastMoveTime = 0;
+      ajouter_fin(&bullets, newBullet);
+    }
+  }
+}
 
-  // Draw game
-  draw();
+void endMenuEvent(SDL_Event* event) {
+  if (event->type == SDL_EVENT_KEY_DOWN) {
+    if (event->key.key == SDLK_RETURN) {
+      endGame();
+    }
+  }
+}
 
+void manageEvent(SDL_Event* event) {
+  switch (game.playing) {
+    case 1:
+      startMenuEvent(event);
+      break;
+
+    case 2:
+      gameEvent(event);
+      break;
+
+    case 3:
+      endMenuEvent(event);
+      break;
+    
+    default:
+      startMenuEvent(event);
+      break;
+  }
 }
 
 
 void bulletsTick(DWORD actualTime) {
-  struct DoubleChaine *currentElement = bullets.first;
+  DoubleChaine *currentElement = bullets.first;
 
   while (currentElement != NULL) {
 
-    struct Bullet *bullet = currentElement->value;
+    Bullet *bullet = currentElement->value;
 
     if (actualTime - bullet->lastMoveTime > BULLET_MOVE_INTERVAL_MS) {
       if (bullet->posY < HEIGHT - 1) {
@@ -449,7 +442,7 @@ void bulletsTick(DWORD actualTime) {
 
 void invidersTick(DWORD actualTime) {
   if (actualTime - game.lastSpawnMs > INVIDER_SPAWN_INTERVAL_MS) {
-    struct Invider *newInvider = malloc(sizeof(struct Invider));
+    Invider *newInvider = malloc(sizeof(Invider));
     newInvider->posX = rand() % WIDTH;
     newInvider->posY = HEIGHT;
     newInvider->health = INVIDER_HEALTH;
@@ -459,11 +452,11 @@ void invidersTick(DWORD actualTime) {
     game.lastSpawnMs = actualTime;
   }
 
-  struct DoubleChaine *currentElement = inviders.first;
+  DoubleChaine *currentElement = inviders.first;
 
   while (currentElement != NULL) {
 
-    struct Invider *invider = currentElement->value;
+    Invider *invider = currentElement->value;
 
     if (actualTime - invider->lastMoveTime > INVIDER_MOVE_INTERVAL_MS) {
       if (invider->posY > 0) {
@@ -496,31 +489,25 @@ void invidersTick(DWORD actualTime) {
 
 void gameTick(DWORD actualTime) {
 
-  while (_kbhit()) {          // une touche est pressée ?
+  /*while (_kbhit()) {          // une touche est pressée ?
     char c = _getch();        // lire la touche sans attendre Enter
     
     if (c == 75) { // Fleche gauche
-      if (player.posX != 0/* && !game.moved*/) {
-        player.posX--;
-        //game.moved = 1;
-      }
+      playerMoveLeft(&player, 0, 1);
     } else if (c == 77) { // Fleche droite
-      if (player.posX < WIDTH-1/* && !game.moved*/) {
-        player.posX++;
-        //game.moved = 1;
-      }
+      playerMoveRight(&player, WIDTH-1, 1);
     } else if (c == 'q') {
       game.playing = 0;
       return;
     } else if (c == ' ') {
-      struct Bullet *newBullet = malloc(sizeof(struct Bullet));
+      Bullet *newBullet = malloc(sizeof(Bullet));
       newBullet->posX = player.posX;
       newBullet->posY = player.posY;
       newBullet->lastMoveTime = 0;
       ajouter_fin(&bullets, newBullet);
     }
 
-  }
+  }*/
 
 
   bulletsTick(actualTime);
@@ -530,7 +517,7 @@ void gameTick(DWORD actualTime) {
 
 void startMenuTick(DWORD actualTime) {
 
-  while (_kbhit()) {          // une touche est pressée ?
+  /*while (_kbhit()) {          // une touche est pressée ?
     char c = _getch();        // lire la touche sans attendre Enter
     
     if (c == 75) { // Fleche gauche
@@ -550,8 +537,7 @@ void startMenuTick(DWORD actualTime) {
 
     }
 
-  }
-
+  }*/
 
 }
 
@@ -590,34 +576,61 @@ void tick() {
       break;
   }
 
+
   if (actualTime - game.lastTickMs > 1000/MAX_FPS) {
+    
     game.lastTickMs = GetTickCount();
 
     draw();
+    
   }
   
 }
 
 
 void init() {
-  startGame();
   
-  game.playing = 2;
+  game.playing = 1;
 
   startMenuBtnIndex = 0;
 
-  hideCursor();
-  drawAll();
 }
 
 
 int main() {
   srand(time(NULL));
+
+
+  initGameVisual(WIDTH, HEIGHT, OFFSET_X, OFFSET_Y, PLAYER_HEALTH);
+  initWindow();
+
   init();
 
+
+  SDL_Event event;
+
   while (game.playing) {
+    
+    while (SDL_PollEvent(&event)) {
+      if (event.type == SDL_EVENT_QUIT) {
+        game.playing = 0;
+      }
+
+      if (event.type == SDL_EVENT_KEY_DOWN) {
+        if (event.key.key == SDLK_Q) {
+          game.playing = 0;
+          continue;
+        }
+      }
+
+      manageEvent(&event);
+    }
+
     tick();
+
   }
+
+  destroyWindow();
 
   return 0;
 }
