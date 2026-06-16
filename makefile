@@ -14,9 +14,11 @@ programme: $(OBJS)
 	$(CC) $(OBJS) -o build/programme $(SDL_LIB)
 
 build/src/%.o: src/%.c
+	if not exist "build\\src" mkdir "build\\src"
 	$(CC) -c $< -o $@ $(SDL_INC)
 
 build/libs/%.o: libs/%.c
+	if not exist "build\\libs" mkdir "build\\libs"
 	$(CC) -c $< -o $@ $(SDL_INC)
 
 clean:
