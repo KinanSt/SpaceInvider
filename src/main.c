@@ -30,7 +30,6 @@ Plateau :
 #define OFFSET_Y 3
 #define MAX_FPS 60
 
-#define BULLET_INTERVAL_MS 500
 #define BULLET_MOVE_INTERVAL_MS 100
 
 #define INVIDER_MOVE_INTERVAL_MS 500
