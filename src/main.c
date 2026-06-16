@@ -26,7 +26,7 @@ Plateau :
 
 #define HEIGHT 20
 #define WIDTH 20
-#define OFFSET_X 5
+#define OFFSET_X 3
 #define OFFSET_Y 3
 #define MAX_FPS 20
 #define GAME_BORDERS ' '
@@ -40,6 +40,9 @@ Plateau :
 
 #define PLAYER_Y 2
 #define PLAYER_HEALTH 5
+
+/*
+Previously used for console display
 
 #define moveTo(x, y) printf("\033[%d;%dH", (y)+1, (x)+1)
 #define moveToGame(x, y) printf("\033[%d;%dH", OFFSET_Y + HEIGHT - (y), OFFSET_X + 1 + (x))
@@ -60,7 +63,7 @@ Plateau :
 
 
 #define reset() printf("\033[0m")
-
+*/
 
 typedef struct Game {
   int lastTickMs;
@@ -81,13 +84,13 @@ uint8_t startMenuBtnIndex = 0;
 int bestScore = -1;
 
 
-void clearRect(int x1, int y1, int width, int height) {
+/*void clearRect(int x1, int y1, int width, int height) {
   for (int y = 0; y < height; y++) {
     moveTo(x1, y1+y);
 
     for (int x = 0; x < width; x++) putchar(' ');
   }
-}
+}*/
 
 DoubleChaine* deleteInvider(DoubleChaine *inviderElement) {
   free(inviderElement->value);
@@ -248,8 +251,8 @@ void draw() {
       break;
   }
 
-  reset();
-  moveToGame(-OFFSET_X, -OFFSET_Y+1);
+  // reset();
+  // moveToGame(-OFFSET_X, -OFFSET_Y+1);
 }
 
 
