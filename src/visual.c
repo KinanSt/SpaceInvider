@@ -4,6 +4,8 @@
 SDL_Window *window;
 SDL_Renderer *renderer;
 
+SDL_Surface *icon;
+
 TTF_Font *font;
 TTF_Font *gameFont;
 
@@ -44,10 +46,17 @@ void initWindow() {
 
   window = SDL_CreateWindow("Space Invider", 1000, 1000, SDL_WINDOW_RESIZABLE);
 
-
   if (window == NULL) {
     printf("CreateWindow: %s\n", SDL_GetError());
-    return;
+    exit(1);
+  }
+
+
+  icon = IMG_Load("imgs/player.png");
+
+  if (icon) {
+    SDL_SetWindowIcon(window, icon);
+    SDL_DestroySurface(icon);
   }
 
   renderer = SDL_CreateRenderer(window, NULL);

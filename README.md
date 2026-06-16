@@ -38,34 +38,59 @@ Space Invider est une version graphique du classique "Space Invaders" développ�
 
 ## Dépendances
 
-- GCC pour Windows
+- GCC ou Clang
 - SDL3
 - SDL3_ttf
 - SDL3_image
 - Fichiers de ressources présentés dans `fonts/` et `imgs/`
 
+## Dépendances supplémentaires pour macOS / Linux
+
+Sur macOS :
+
+```bash
+brew install sdl3 sdl3_ttf sdl3_image pkg-config
+```
+
+Sur Ubuntu / Debian :
+
+```bash
+sudo apt install libsdl3-dev libsdl3-ttf-dev libsdl3-image-dev pkg-config build-essential
+```
+
 ## Compilation
 
 Depuis le dossier racine du projet :
 
-```powershell
+```bash
 make
 ```
 
-Le binaire est généré dans :
+Sur Windows, le binaire est généré dans :
 
 ```text
-build/programme.exe
+bin/programme.exe
+```
+
+Sur macOS / Linux, le binaire est généré dans :
+
+```text
+bin/programme
 ```
 
 ## Exécution
 
 Lancer le jeu depuis le dossier racine :
 
-```powershell
-build\programme.exe
+```bash
+bin/programme.exe   # Windows
+# ou
+bin/programme       # macOS / Linux
 ```
 
+> Sur Windows, le Makefile utilise les librairies SDL3 présentes dans `libs/SDL3`, `libs/SDL3_ttf` et `libs/SDL3_image`.
+> Sur macOS / Linux, il utilise `pkg-config` pour trouver SDL3, SDL3_ttf et SDL3_image.
+>
 > Si la fenêtre ne s'ouvre pas ou si le texte n'apparaît pas, vérifie que les fichiers `fonts/arial.ttf`, `imgs/player.png` et `imgs/invader.png` sont présents.
 
 ## Commandes du jeu

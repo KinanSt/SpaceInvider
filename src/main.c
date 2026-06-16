@@ -17,8 +17,6 @@ Plateau :
 #include <math.h>
 #include <stdint.h> // uint***
 #include <time.h>
-#include <windows.h>
-#include <conio.h>
 
 #include "list.h"
 #include "player.h"
@@ -217,10 +215,9 @@ void startGame() {
   player.posX = WIDTH/2;
   player.health = PLAYER_HEALTH;
   player.score = 0;
-  player.lastShotMs = GetTickCount();
+  player.lastShotMs = SDL_GetTicks();
 
   game.lastTickMs = 0;
-  // game.moved = 0;
   game.playing = 2;
 }
 
@@ -411,7 +408,7 @@ void manageEvent(SDL_Event* event) {
 }
 
 
-void bulletsTick(DWORD actualTime) {
+void bulletsTick(Uint32 actualTime) {
   DoubleChaine *currentElement = bullets.first;
 
   while (currentElement != NULL) {
@@ -440,7 +437,7 @@ void bulletsTick(DWORD actualTime) {
   }
 }
 
-void invidersTick(DWORD actualTime) {
+void invidersTick(Uint32 actualTime) {
   if (actualTime - game.lastSpawnMs > INVIDER_SPAWN_INTERVAL_MS) {
     Invider *newInvider = malloc(sizeof(Invider));
     newInvider->posX = rand() % WIDTH;
@@ -487,7 +484,7 @@ void invidersTick(DWORD actualTime) {
   }
 }
 
-void gameTick(DWORD actualTime) {
+void gameTick(Uint32 actualTime) {
 
   /*while (_kbhit()) {          // une touche est pressée ?
     char c = _getch();        // lire la touche sans attendre Enter
@@ -515,7 +512,7 @@ void gameTick(DWORD actualTime) {
 
 }
 
-void startMenuTick(DWORD actualTime) {
+void startMenuTick(Uint32 actualTime) {
 
   /*while (_kbhit()) {          // une touche est pressée ?
     char c = _getch();        // lire la touche sans attendre Enter
@@ -541,22 +538,14 @@ void startMenuTick(DWORD actualTime) {
 
 }
 
-void endMenuTick(DWORD actualTime) {
-
-  while (_kbhit()) {          // une touche est pressée ?
-    char c = _getch();        // lire la touche sans attendre Enter
-    
-    if (c == 13) { // enter
-      
-      game.playing = 1;
-        
-    }
-  }
+void endMenuTick(Uint32 actualTime) {
+  (void)actualTime;
+  /* Event handling is done in SDL event loop through endMenuEvent(). */
 }
 
 void tick() {
 
-  DWORD actualTime = GetTickCount();
+  Uint32 actualTime = SDL_GetTicks();
 
   switch (game.playing) {
     case 1:
@@ -579,7 +568,7 @@ void tick() {
 
   if (actualTime - game.lastTickMs > 1000/MAX_FPS) {
     
-    game.lastTickMs = GetTickCount();
+    game.lastTickMs = SDL_GetTicks();
 
     draw();
     
