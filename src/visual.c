@@ -371,7 +371,7 @@ void drawEndMenu(uint16_t score, uint16_t bestScore) {
 
 
   getGamePosition(gameWidth / 2, gameHeight/2+4, &posX, &posY);
-  drawTextAt(posX, posY, "You lose...", gameFont, &white, 1, 1, NULL);
+  drawTextAt(posX, posY, "You lose...", getGameFont(), &white, 1, 1, NULL);
 
   //moveToGame(WIDTH / 2 - (16 + (player.score > 0? (int) floor(log10(player.score)) + 1 : 0))/2, HEIGHT/2 + 3);
   //printf("Your score is : %d", player.score);
@@ -379,7 +379,7 @@ void drawEndMenu(uint16_t score, uint16_t bestScore) {
 
   sprintf(buffer, "Your score is : %d", score);
   getGamePosition(gameWidth / 2, gameHeight/2 + 3, &posX, &posY);
-  drawTextAt(posX, posY, buffer, gameFont, &white, 1, 1, NULL);
+  drawTextAt(posX, posY, buffer, getGameFont(), &white, 1, 1, NULL);
 
   //int _bestScore = getBestScore();
   //moveToGame(WIDTH / 2 - (16 + (_bestScore > 0? (int) floor(log10(_bestScore)) + 1 : 0))/2, HEIGHT/2 + 2);
@@ -388,11 +388,11 @@ void drawEndMenu(uint16_t score, uint16_t bestScore) {
   
   sprintf(buffer, "Best score is : %d", bestScore);
   getGamePosition(gameWidth / 2, gameHeight/2 + 2, &posX, &posY);
-  drawTextAt(posX, posY, buffer, gameFont, &white, 1, 1, NULL);
+  drawTextAt(posX, posY, buffer, getGameFont(), &white, 1, 1, NULL);
 
 
   getGamePosition(gameWidth/2, gameHeight/2 - 2, &posX, &posY);
-  drawTextAt(posX, posY, "Back", gameFont, &black, 1, 1, &white);
+  drawTextAt(posX, posY, "Back", getGameFont(), &black, 1, 1, &white);
   
   
 

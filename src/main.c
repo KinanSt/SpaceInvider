@@ -66,7 +66,6 @@ Previously used for console display
 typedef struct Game {
   int lastTickMs;
   int lastSpawnMs;
-  //boolean moved;
   uint8_t playing; // 0 -> stop ; 1 -> start menu ; 2 -> play ; 3 -> menu end
 } Game;
 
@@ -81,14 +80,6 @@ uint8_t startMenuBtnIndex = 0;
 
 int bestScore = -1;
 
-
-/*void clearRect(int x1, int y1, int width, int height) {
-  for (int y = 0; y < height; y++) {
-    moveTo(x1, y1+y);
-
-    for (int x = 0; x < width; x++) putchar(' ');
-  }
-}*/
 
 DoubleChaine* deleteInvider(DoubleChaine *inviderElement) {
   free(inviderElement->value);
@@ -292,7 +283,7 @@ void gameEvent(SDL_Event* event) {
 void endMenuEvent(SDL_Event* event) {
   if (event->type == SDL_EVENT_KEY_DOWN) {
     if (event->key.key == SDLK_RETURN) {
-      endGame();
+      game.playing = 1;
     }
   }
 }
@@ -383,7 +374,6 @@ void invidersTick(Uint32 actualTime) {
         if (player.health <= 0) {
           // lose
           endGame();
-          printf("fin");
           return;
         }
 
